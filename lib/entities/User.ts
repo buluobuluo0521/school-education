@@ -19,4 +19,7 @@ export class User {
         default: () => "CURRENT_TIMESTAMP" 
     })
     createdAt!: Date;
+    
+    @Column({ type: "varchar", length: 255 })
+    grade!: string;
 }
