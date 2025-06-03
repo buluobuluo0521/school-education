@@ -8,6 +8,8 @@ interface NavbarProps {
     username: string;
     classInfo: string;
   }
+
+const navItems = ['首页', '考试中心', '考试记录', '错题集']
   
   const Navbar: React.FC<NavbarProps> = ({ 
     activeTab, 

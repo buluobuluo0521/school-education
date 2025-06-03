@@ -42,7 +42,7 @@ function App() {
 
   const handleStartExam = (examId: number) => {
     console.log(`开始考试: ${examId}`);
-    // 这里可以添加开始考试的逻辑
+    window.location.href = `/exam?id=${examId}`;
   };
 
   if (loading) {
