@@ -10,6 +10,7 @@ export default function ExamPage() {
   const [userAnswers, setUserAnswers] = useState<{[key: string]: string}>({});
   const [submitted, setSubmitted] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
+  const [correctCount, setCorrectCount] = useState(0);
   const [username, setUsername] = useState<string>('');
  // 从 localStorage 中获取用户名
  useEffect(() => {
@@ -106,6 +107,11 @@ export default function ExamPage() {
                       ? acc + question.score
                       : acc;
                   }, 0);
+                  const correct = exams.filter(question => 
+                    userAnswers[question.id] === question.correctAnswer
+                  ).length;
+                  console.log('计算正确数:', correct);
+                  setCorrectCount(correct);
                   setTotalScore(score);
                   setSubmitted(true);
                 }}
@@ -121,10 +127,12 @@ export default function ExamPage() {
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
               <div>
-                <span className="text-lg font-semibold">总得分：{totalScore}</span>
-                <span className="ml-4 text-gray-600">
-                  正确题数：{Object.keys(userAnswers).filter(k => userAnswers[k] === exams.find(q => q.id === k)?.correctAnswer).length}
-                </span>
+                <div className="space-y-1">
+                  <span className="text-lg font-semibold">总得分：{totalScore}</span>
+                  <span className="block text-green-600 font-semibold">
+                    正确题数：{correctCount}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center gap-4">
                 <button
