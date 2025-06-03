@@ -24,6 +24,8 @@ export default function LoginPage() {
     try {
       const res = await axios.post('/api/proxy/login', form)
       setLoading(false)
+      //localStorage 是浏览器提供的一种 持久化存储机制，用于在用户的浏览器中保存数据。
+      localStorage.setItem('username', form.username); 
       window.location.href = '/Index'
     } catch (err: any) {
       setLoading(false)

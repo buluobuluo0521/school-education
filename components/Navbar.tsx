@@ -43,9 +43,14 @@ interface NavbarProps {
                 ))}
               </div>
             </div>
+            {/*动态用户信息*/}
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="bg-gray-200 border-2 border-dashed rounded-xl w-10 h-10" />
+                <img 
+                  src="/img/奶农.png" // 修改为 public 目录下的路径
+                  className="w-10 h-10 rounded-xl border-2 border-gray-200 object-cover"
+                  alt="用户头像"
+                />
               </div>
               <div className="ml-3">
                 <div className="text-sm font-medium text-gray-700">{username}</div>
