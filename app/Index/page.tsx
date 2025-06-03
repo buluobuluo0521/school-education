@@ -12,11 +12,19 @@ function App() {
   const [subject, setSubject] = useState('全部');
   const [exams, setExams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  
+  const [username, setUsername] = useState<string>('');
+
   const navItems = ['首页', '考试中心', '考试记录', '错题集'];
   const examTypes = ['全部', '固定试卷', '时段试卷', '任务试卷'];
   const subjects = ['全部', '语文', '数学'];
-
+  // 从 localStorage 中获取用户名
+  useEffect(() => {
+    const user = localStorage.getItem('username');
+    if (user) {
+      setUsername(user);
+    }
+  }, []);
+  //获取考试数据
   useEffect(() => {
     const fetchExams = async () => {
       try {
@@ -60,7 +68,7 @@ function App() {
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         navItems={navItems}
-        username="学生姓名"
+        username={username}  // 动态绑定用户名
         classInfo="一年级三班"
       />
         {/* 主内容区域 */}
