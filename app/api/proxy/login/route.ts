@@ -5,7 +5,9 @@ import { User } from '@/lib/entities/User';
 export async function POST(request: NextRequest) {
     try {
         const { username, password } = await request.json();  // 从请求体获取username
-        await AppDataSource.initialize();
+        if  (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
         const userRepository = AppDataSource.getRepository(User);
 
         const user = await userRepository.findOne({

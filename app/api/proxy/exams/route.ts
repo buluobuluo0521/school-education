@@ -5,7 +5,9 @@ import { Exam } from '@/lib/entities/Exam';
 
 export async function GET(request: NextRequest) {
     try {
-        await AppDataSource.initialize();
+        if  (!AppDataSource.isInitialized) {
+            await AppDataSource.initialize();
+        }
         const examRepository = AppDataSource.getRepository(Exam);
         const exams = await examRepository.find();
         
