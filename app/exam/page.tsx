@@ -10,7 +10,14 @@ export default function ExamPage() {
   const [userAnswers, setUserAnswers] = useState<{[key: string]: string}>({});
   const [submitted, setSubmitted] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
-
+  const [username, setUsername] = useState<string>('');
+ // 从 localStorage 中获取用户名
+ useEffect(() => {
+    const user = localStorage.getItem('username');
+    if (user) {
+      setUsername(user);
+    }
+  }, []);
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     setExamId(urlParams.get('id') || '');
@@ -38,10 +45,10 @@ export default function ExamPage() {
         activeTab="考试页面"
         setActiveTab={() => {}}
         navItems={['首页', '考试中心', '考试记录', '错题集', '考试页面']}
-        username="学生姓名"
+        username={username}  // 动态绑定用户名
         classInfo="一年级三班"
       />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20">
         <div className="text-center py-12">
           <h1 className="text-4xl font-bold text-gray-900">考试进行中</h1>
           <p className="mt-4 text-lg text-gray-600">当前考试ID：{examId}</p>
