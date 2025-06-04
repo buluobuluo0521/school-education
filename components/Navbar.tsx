@@ -1,5 +1,6 @@
 'use client'
 import React from 'react';
+import { useRouter } from 'next/navigation';
  
 interface NavbarProps {
     activeTab: string;
@@ -18,6 +19,7 @@ const navItems = ['首页', '考试中心', '考试记录', '错题集']
     username,
     classInfo 
   }) => {
+    const router = useRouter();
     return (
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +35,20 @@ const navItems = ['首页', '考试中心', '考试记录', '错题集']
                 {navItems.map((item) => (
                   <button
                     key={item}
-                    onClick={() => setActiveTab(item)}
+                    onClick={() => {
+                      setActiveTab(item);
+                      switch(item) {
+                        case '考试中心':
+                          router.push('/Index');
+                          break;
+                        case '考试记录':
+                          router.push('/ExamRecord');
+                          break;
+                        // 其他导航项可在此扩展
+                        default:
+                          break;
+                      }
+                    }}
                     className={`${
                       activeTab === item
                         ? 'border-blue-500 text-gray-900'
