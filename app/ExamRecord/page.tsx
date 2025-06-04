@@ -19,6 +19,14 @@ const ExamRecordPage = () => {
 
 
   const [username, setUsername] = useState<string>('');
+
+
+  useEffect(() => {
+    const user = localStorage.getItem('username');
+    if (user) {
+      setUsername(user);
+    }
+  }, []);
   useEffect(() => {
     const fetchRecords = async () => {
       try {
