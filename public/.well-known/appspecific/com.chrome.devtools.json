@@ -1,0 +1,7 @@
+{
+  "message": "Chrome DevTools configuration",
+  "config": {
+    "defaultDebugger": true,
+    "sourceMaps": true
+  }
+}
