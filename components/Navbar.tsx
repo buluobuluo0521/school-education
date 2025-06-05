@@ -25,10 +25,16 @@ const navItems = ['首页', '考试中心', '考试记录', '错题集']
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
+
               <div className="flex-shrink-0 flex items-center">
-                <div className="bg-blue-600 text-white font-bold text-xl px-3 py-2 rounded-md">
-                  考
+                <div className="text-white font-bold text-xl px-3 py-2 rounded-md">
+                <img 
+                  src="/img/logo.png" // 修改为 public 目录下的路径
+                  className="h-10 rounded-xl border-gray-200 object-cover"
+                  alt="用户头像"
+                />
                 </div>
+
                 <span className="ml-2 text-xl font-semibold text-gray-800">考试系统</span>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
