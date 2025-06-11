@@ -101,19 +101,45 @@ export default function ExamPage() {
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
             <div className="max-w-7xl mx-auto text-right">
               <button
-                onClick={() => {
-                  const score = exams.reduce((acc, question) => {
-                    return userAnswers[question.id] === question.correctAnswer
-                      ? acc + question.score
-                      : acc;
-                  }, 0);
-                  const correct = exams.filter(question => 
+                onClick={async () => {
+                  // 计算得分和正确题数（保持原有逻辑）
+                  const totalScore = exams.reduce((acc, question) => 
+                    userAnswers[question.id] === question.correctAnswer ? acc + question.score : acc,
+                    0
+                  );
+                  const correctCount = exams.filter(question => 
                     userAnswers[question.id] === question.correctAnswer
                   ).length;
-                  console.log('计算正确数:', correct);
-                  setCorrectCount(correct);
-                  setTotalScore(score);
-                  setSubmitted(true);
+  
+                  try {
+                    // 从localStorage获取用户名（假设已登录存储）
+                    const username = localStorage.getItem('username'); 
+                    if (!username) throw new Error('未获取到用户信息');
+  
+                    // 调用后端接口
+                    const response = await fetch('/api/proxy/submit-exam', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ 
+                        examId: examId, // 当前考试ID（假设已通过props或状态获取）
+                        username,
+                        totalScore,
+                        correctCount 
+                      })
+                    });
+                    console.log(response)
+  
+                    if (!response.ok) throw new Error('网络请求失败');
+                    const result = await response.json();
+                    if (result.code !== 200) throw new Error(result.message);
+                    
+                    // 提交成功后更新状态（触发UI显示）
+                    setSubmitted(true);
+                    setTotalScore(totalScore);
+                    setCorrectCount(correctCount);
+                  } catch (error) {
+                    alert(`提交失败：${error instanceof Error ? error.message : '未知错误'}`);
+                  }
                 }}
                 className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
               >
