@@ -58,11 +58,6 @@ const ExamRecordPage = () => {
       classInfo="一年级三班"
     />
 
-
-
-
-
-
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">考试记录</h1>
       {records.length === 0 ? (
@@ -72,10 +67,10 @@ const ExamRecordPage = () => {
           {records.map((record) => (
             <div key={record.id} className="border p-4 rounded-lg shadow-sm">
               <p className="text-sm text-gray-500">考试ID: {record.examId}</p>
-              <p className="text-base font-medium">用户: {record.username}</p>
-              <div className="mt-2 grid grid-cols-2 gap-2">
-                <p>得分: {record.totalScore}</p>
-                <p>正确题数: {record.correctCount}</p>
+              <p className="text-base font-medium text-blue-500">用户: {record.username}</p>
+              <div className="mt-2 grid grid-cols-2 gap-2 bg">
+                <p className="text-red-500">得分: {record.totalScore}</p>
+                <p className="text-green-500">正确题数: {record.correctCount}</p>
                 <p className="text-sm text-gray-500 col-span-2">时间: {new Date(record.createdAt).toLocaleString()}</p>
               </div>
             </div>
