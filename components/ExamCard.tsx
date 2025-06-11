@@ -14,7 +14,7 @@ import React from 'react';
 
 interface ExamCardProps {
   exam: Exam;
-  onStartExam: (examId: number) => void;
+  onStartExam: (examId: number, examType: string, subject: string) => void;
 }
 
 const ExamCard = ({ exam, onStartExam }: ExamCardProps) => {
@@ -66,7 +66,7 @@ const ExamCard = ({ exam, onStartExam }: ExamCardProps) => {
         
         <button
           className="mt-6 w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white font-medium rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1"
-          onClick={() => onStartExam(exam.id)}
+          onClick={() => onStartExam(exam.id, exam.type, exam.subject)}
         >
           开始答题
         </button>

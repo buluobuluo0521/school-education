@@ -12,6 +12,8 @@ export default function ExamPage() {
   const [totalScore, setTotalScore] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [username, setUsername] = useState<string>('');
+  const [examType, setExamType] = useState('');
+  const [examName, setExamName] = useState('');
  // 从 localStorage 中获取用户名
  useEffect(() => {
     const user = localStorage.getItem('username');
@@ -22,6 +24,8 @@ export default function ExamPage() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     setExamId(urlParams.get('id') || '');
+    setExamType(urlParams.get('type') || ''); // 假设url带type参数
+    setExamName(urlParams.get('name') || ''); // 假设url带name参数
     
     const fetchExams = async () => {
       try {
@@ -149,7 +153,9 @@ export default function ExamPage() {
                           userAnswer: userAnswers[question.id],
                           correctAnswer: question.correctAnswer,
                           content: question.content,
-                          options: question.options
+                          options: question.options,
+                          examType,   // 新增
+                          examName    // 新增
                         })
                       });
                     }

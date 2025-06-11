@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 
 @Entity("wrong_books") // Specify the table name explicitly
+@Index(['username', 'questionId', 'examType', 'examName'], { unique: true })
 export class WrongBook {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -22,4 +23,10 @@ export class WrongBook {
 
   @Column("simple-array")
   options!: string[];
+
+  @Column()
+  examType!: string;
+
+  @Column()
+  examName!: string;
 }

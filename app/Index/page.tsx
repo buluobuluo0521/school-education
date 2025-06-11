@@ -47,10 +47,12 @@ function App() {
     return (examType === '全部' || exam.type === examType) && 
            (subject === '全部' || exam.subject.includes(subject));
   });
+  console.log(filteredExams);
+  
 
-  const handleStartExam = (examId: number) => {
+  const handleStartExam = (examId: number, examType: string, subject: string) => {
     console.log(`开始考试: ${examId}`);
-    window.location.href = `/exam?id=${examId}`;
+    window.location.href = `/exam?id=${examId}&type=${examType}&name=${subject}`;
   };
 
   if (loading) {
