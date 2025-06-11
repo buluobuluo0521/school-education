@@ -68,6 +68,7 @@ export default function LoginPage() {
             {loading ? '登录中...' : '登录'}
           </button>
           {error && <div className="text-error text-center">{error}</div>}
+          <button type="button" className="btn btn-secondary w-full" onClick={() => window.location.href = '/register'}>注册</button>
         </form>
       </div>
     </div>
