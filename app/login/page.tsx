@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-
+import { useRouter } from 'next/navigation'
 export default function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' })  // 改为username字段
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -26,7 +27,7 @@ export default function LoginPage() {
       setLoading(false)
       //localStorage 是浏览器提供的一种 持久化存储机制，用于在用户的浏览器中保存数据。
       localStorage.setItem('username', form.username); 
-      window.location.href = '/Index'
+      router.push('/Index');
     } catch (err: any) {
       setLoading(false)
       if (err.response && err.response.data && err.response.data.error) {
@@ -64,11 +65,17 @@ export default function LoginPage() {
               required
             />
           </div>
-          <button type="submit" className={`btn btn-error w-full ${loading ? 'btn-disabled' : ''}`}>  {/* 将 btn-primary 改为 btn-error */}
+          <button
+          
+          type="submit" className={`btn btn-error w-full ${loading ? 'btn-disabled' : ''}`}>  
             {loading ? '登录中...' : '登录'}
           </button>
           {error && <div className="text-error text-center">{error}</div>}
-          <button type="button" className="btn btn-secondary w-full" onClick={() => window.location.href = '/register'}>注册</button>
+          <button 
+            onClick={() => {
+              router.push('/register');
+            }} 
+          type="button" className="btn btn-secondary w-full">注册</button>
         </form>
       </div>
     </div>

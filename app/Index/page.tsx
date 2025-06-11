@@ -1,22 +1,28 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
-import ExamFilters from '@/components/ExamFilters';
-import ExamCard from '@/components/ExamCard';
-import EmptyState from '@/components/EmptyState';
 import Footer from '@/components/Footer';
-
+import { usePathname } from 'next/navigation'; // 新增导入
+import { useRouter } from 'next/navigation';
+ 
 function App() {
-  const [activeTab, setActiveTab] = useState('考试中心');
-  const [examType, setExamType] = useState('全部');
-  const [subject, setSubject] = useState('全部');
-  const [exams, setExams] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('首页');
+  const pathname = usePathname(); // 获取当前路由
+  const router = useRouter();
+  // 监听路由变化，同步更新activeTab
+  useEffect(() => {
+    const pathToTab = {
+      '/Index': '首页',
+      '/Exam': '考试中心',
+      '/ExamRecord': '考试记录',
+      '/WrongBook': '错题集'
+    };
+    const matchedTab = pathToTab[pathname as keyof typeof pathToTab];
+    if (matchedTab) setActiveTab(matchedTab);
+  }, [pathname]);
   const [username, setUsername] = useState<string>('');
 
   const navItems = ['首页', '考试中心', '考试记录', '错题集'];
-  const examTypes = ['全部', '固定试卷', '时段试卷', '任务试卷'];
-  const subjects = ['全部', '语文', '数学'];
   // 从 localStorage 中获取用户名
   useEffect(() => {
     const user = localStorage.getItem('username');
@@ -24,46 +30,12 @@ function App() {
       setUsername(user);
     }
   }, []);
-  //获取考试数据
-  useEffect(() => {
-    const fetchExams = async () => {
-      try {
-        const response = await fetch('/api/proxy/exams');
-        if (!response.ok) throw new Error('获取考试数据失败');
-        const data = await response.json();
-        setExams(data);
-      } catch (error) {
-        console.error('获取考试数据失败:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchExams();
-  }, []);
 
-  // 过滤试卷
-  const filteredExams = exams.filter(exam => {
-    return (examType === '全部' || exam.type === examType) && 
-           (subject === '全部' || exam.subject.includes(subject));
-  });
-  console.log(filteredExams);
-  
 
-  const handleStartExam = (examId: number, examType: string, subject: string) => {
-    console.log(`开始考试: ${examId}`);
-    window.location.href = `/exam?id=${examId}&type=${examType}&name=${subject}`;
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p>加载中...</p>
-      </div>
-    );
-  }
+ 
 
   return (
+    
     <div className="min-h-screen bg-gray-50">
       {/* 导航栏组件 */}
       <Navbar 
@@ -73,50 +45,38 @@ function App() {
         username={username}  // 动态绑定用户名
         classInfo="一年级三班"
       />
-        {/* 主内容区域 */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">考试中心</h1>
-          <p className="mt-2 text-sm text-gray-500">选择试卷类型和学科，开始您的考试</p>
+     <main className="container mx-auto px-4 py-12">
+        {/* 欢迎区域 - 新增样式 */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-100 rounded-2xl shadow-xl p-8 md:p-12 transition-all duration-300 hover:shadow-2xl">
+          <div className="flex flex-col items-center text-center">
+            {/* 猫咪图标 */}
+            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 shadow-md">
+              <span className="text-4xl">🐱</span>
+            </div>
+            {/* 欢迎标题 */}
+            <h1 className="text-[clamp(1.8rem,5vw,3rem)] font-bold text-gray-800 mb-4 tracking-tight">
+              欢迎来到小猫考试
+            </h1>
+            {/* 系统介绍 */}
+            <p className="text-gray-600 text-lg max-w-2xl mb-8">
+                小学生的考试系统。
+            </p>
+            {/* 功能入口按钮 */}
+            <div className="flex flex-wrap gap-4 justify-center">
+              <button 
+                onClick={() => {
+                    router.push('/Exam');
+                  }} 
+                className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-full transition-colors"
+              >
+                开始考试
+                
+              </button>
+            </div>
+          </div>
         </div>
-         {/* 考试过滤器组件 */}
-        <ExamFilters 
-          examType={examType} 
-          setExamType={setExamType} 
-          subject={subject} 
-          setSubject={setSubject}
-          examTypes={examTypes}
-          subjects={subjects}
-        />
-        {/* 考试卡片网格布局 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredExams.map((exam) => (
-            <ExamCard 
-              key={exam.id} 
-              exam={{
-                ...exam,
-
-                // 因为是因为后端返回的时间字段是 ISO 8601 格式的 UTC 时间字符串显示时间是不对，然后我进行格式转换
-                startTime: exam.startTime ? new Date(exam.startTime).toLocaleString('zh-CN', { 
-                  year: 'numeric', month: '2-digit', day: '2-digit',
-                  hour: '2-digit', minute: '2-digit' 
-                }) : exam.startTime,
-                // 同理格式化 endTime
-                endTime: exam.endTime ? new Date(exam.endTime).toLocaleString('zh-CN', { 
-                  year: 'numeric', month: '2-digit', day: '2-digit',
-                  hour: '2-digit', minute: '2-digit' 
-                }) : exam.endTime
-              }} 
-
-
-              onStartExam={handleStartExam} 
-            />
-          ))}
-        </div>
-            {/* 空状态显示 */}
-        {filteredExams.length === 0 && <EmptyState />}
       </main>
-             {/* 页脚组件 */}
+             {/* 页脚组件 */}   
       <Footer />
     </div>
   );
