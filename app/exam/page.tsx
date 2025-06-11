@@ -107,10 +107,16 @@ export default function ExamPage() {
                     userAnswers[question.id] === question.correctAnswer ? acc + question.score : acc,
                     0
                   );
+                  
+                  
                   const correctCount = exams.filter(question => 
                     userAnswers[question.id] === question.correctAnswer
                   ).length;
-  
+                  const wrongQuestions = exams.filter(
+                    question => userAnswers[question.id] && userAnswers[question.id] !== question.correctAnswer
+                  );
+    
+                  
                   try {
                     // 从localStorage获取用户名（假设已登录存储）
                     const username = localStorage.getItem('username'); 
@@ -127,12 +133,26 @@ export default function ExamPage() {
                         correctCount 
                       })
                     });
-                    console.log(response)
   
                     if (!response.ok) throw new Error('网络请求失败');
                     const result = await response.json();
                     if (result.code !== 200) throw new Error(result.message);
                     
+                    // 保存错题到错题集
+                    for (const question of wrongQuestions) {
+                      await fetch('/api/proxy/wrongbook', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          username,
+                          questionId: question.id,
+                          userAnswer: userAnswers[question.id],
+                          correctAnswer: question.correctAnswer,
+                          content: question.content,
+                          options: question.options
+                        })
+                      });
+                    }
                     // 提交成功后更新状态（触发UI显示）
                     setSubmitted(true);
                     setTotalScore(totalScore);

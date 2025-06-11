@@ -50,6 +50,9 @@ const navItems = ['首页', '考试中心', '考试记录', '错题集']
                         case '考试记录':
                           router.push('/ExamRecord');
                           break;
+                           case '错题集':
+                          router.push('/WrongBook');
+                          break;
                         // 其他导航项可在此扩展
                         default:
                           break;
