@@ -8,7 +8,6 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter();
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
@@ -17,6 +16,7 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
+
     if (!form.username || !form.password) {  // 验证用户名是否为空
       setError('请输入用户名和密码')
       setLoading(false)

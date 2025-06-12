@@ -10,16 +10,10 @@ export default function ExamPage() {
   const [submitted, setSubmitted] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
-  const [username, setUsername] = useState<string>('');
   const [examType, setExamType] = useState('');
   const [examName, setExamName] = useState('');
-  // 从 localStorage 中获取用户名
-  useEffect(() => {
-    const user = localStorage.getItem('username');
-    if (user) {
-      setUsername(user);
-    }
-  }, []);
+
+  
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     setExamId(urlParams.get('id') || '');

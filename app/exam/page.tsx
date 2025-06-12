@@ -4,27 +4,32 @@ import ExamFilters from '@/components/ExamFilters';
 import ExamCard from '@/components/ExamCard';
 import EmptyState from '@/components/EmptyState';
 import Footer from '@/components/Footer';
-
+import { usePathname } from 'next/navigation'; // 新增导入
+import Navbar from '@/components/Navbar';
 export default function ExamPage() {
+  const [activeTab, setActiveTab] = useState('首页');
   const [examType, setExamType] = useState('全部');
   const [subject, setSubject] = useState('全部');
   const [exams, setExams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState<string>('');
-  const [examName, setExamName] = useState('');
-
-
-
-
   const examTypes = ['全部', '固定试卷', '时段试卷', '任务试卷'];
   const subjects = ['全部', '语文', '数学'];
-  // 从 localStorage 中获取用户名
+  const pathname = usePathname(); // 获取当前路由
   useEffect(() => {
-    const user = localStorage.getItem('username');
-    if (user) {
-      setUsername(user);
-    }
+    setActiveTab('考试中心'); // 确保从父组件传递了setActiveTab
   }, []);
+
+  // 监听路由变化，同步更新activeTab
+  // useEffect(() => {
+  //   const pathToTab = {
+  //     '/Index': '首页',
+  //     '/exam': '考试中心',
+  //     '/ExamRecord': '考试记录',
+  //     '/WrongBook': '错题集'
+  //   };
+  //   const matchedTab = pathToTab[pathname as keyof typeof pathToTab];
+  //   if (matchedTab) setActiveTab(matchedTab);
+  // }, [pathname]);
   //获取考试数据
   useEffect(() => {
     const fetchExams = async () => {
@@ -52,6 +57,7 @@ export default function ExamPage() {
   
 
   const handleStartExam = (examId: number, examType: string, subject: string) => {
+ 
     window.location.href = `/Exampage?id=${examId}&type=${examType}&name=${subject}`;
   };
 
