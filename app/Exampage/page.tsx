@@ -1,5 +1,4 @@
 'use client'
-import Navbar from '@/components/Navbar';
 import React, { useState, useEffect } from 'react';
 
 export default function ExamPage() {
@@ -7,13 +6,15 @@ export default function ExamPage() {
   const [exams, setExams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [examId, setExamId] = useState('');
-  const [userAnswers, setUserAnswers] = useState<{[key: string]: string}>({});
+  const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [totalScore, setTotalScore] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [username, setUsername] = useState<string>('');
- // 从 localStorage 中获取用户名
- useEffect(() => {
+  const [examType, setExamType] = useState('');
+  const [examName, setExamName] = useState('');
+  // 从 localStorage 中获取用户名
+  useEffect(() => {
     const user = localStorage.getItem('username');
     if (user) {
       setUsername(user);
@@ -22,7 +23,9 @@ export default function ExamPage() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     setExamId(urlParams.get('id') || '');
-    
+    setExamType(urlParams.get('type') || ''); // 假设url带type参数
+    setExamName(urlParams.get('name') || ''); // 假设url带name参数
+
     const fetchExams = async () => {
       try {
         const response = await fetch('/api/proxy/question');
@@ -36,19 +39,13 @@ export default function ExamPage() {
         setLoading(false);
       }
     };
-    
+
     fetchExams();
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar 
-        activeTab="考试页面"
-        setActiveTab={() => {}}
-        navItems={['首页', '考试中心', '考试记录', '错题集', '考试页面']}
-        username={username}  // 动态绑定用户名
-        classInfo="一年级三班"
-      />
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20">
         <div className="text-center py-12">
           <h1 className="text-4xl font-bold text-gray-900">考试进行中</h1>
@@ -69,18 +66,16 @@ export default function ExamPage() {
                         ...prev,
                         [question.id]: String.fromCharCode(65 + i)
                       }))}
-                      className={`p-2 rounded cursor-pointer transition-colors ${
-                        userAnswers[question.id] === String.fromCharCode(65 + i)
-                          ? 'border-2 border-blue-500 bg-blue-50'
-                          : 'border bg-gray-50'
-                      } ${
-                        submitted && 
+                      className={`p-2 rounded cursor-pointer transition-colors ${userAnswers[question.id] === String.fromCharCode(65 + i)
+                        ? 'border-2 border-blue-500 bg-blue-50'
+                        : 'border bg-gray-50'
+                        } ${submitted &&
                         (String.fromCharCode(65 + i) === question.correctAnswer
                           ? 'bg-green-100 border-green-500'
                           : userAnswers[question.id] === String.fromCharCode(65 + i)
                             ? 'bg-red-100 border-red-500'
                             : '')
-                      }`}
+                        }`}
                     >
                       {String.fromCharCode(65 + i)}. {option}
                     </div>
@@ -103,36 +98,60 @@ export default function ExamPage() {
               <button
                 onClick={async () => {
                   // 计算得分和正确题数（保持原有逻辑）
-                  const totalScore = exams.reduce((acc, question) => 
+                  const totalScore = exams.reduce((acc, question) =>
                     userAnswers[question.id] === question.correctAnswer ? acc + question.score : acc,
                     0
                   );
-                  const correctCount = exams.filter(question => 
+                  const correctCount = exams.filter(question =>
                     userAnswers[question.id] === question.correctAnswer
                   ).length;
-  
+
+                  const wrongQuestions = exams.filter(
+                    question => userAnswers[question.id] && userAnswers[question.id] !== question.correctAnswer
+                  );
+
+
                   try {
                     // 从localStorage获取用户名（假设已登录存储）
-                    const username = localStorage.getItem('username'); 
+                    const username = localStorage.getItem('username');
                     if (!username) throw new Error('未获取到用户信息');
-  
+
                     // 调用后端接口
                     const response = await fetch('/api/proxy/submit-exam', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ 
+                      body: JSON.stringify({
                         examId: examId, // 当前考试ID（假设已通过props或状态获取）
                         username,
                         totalScore,
-                        correctCount 
+                        correctCount
                       })
                     });
-                    console.log(response)
-  
+
+
                     if (!response.ok) throw new Error('网络请求失败');
                     const result = await response.json();
                     if (result.code !== 200) throw new Error(result.message);
-                    
+
+
+                    // 保存错题到错题集
+                    for (const question of wrongQuestions) {
+                      await fetch('/api/proxy/wrongbook', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          username,
+                          questionId: question.id,
+                          userAnswer: userAnswers[question.id],
+                          correctAnswer: question.correctAnswer,
+                          content: question.content,
+                          options: question.options,
+                          examType,   // 新增
+                          examName    // 新增
+                        })
+                      });
+                    }
+
                     // 提交成功后更新状态（触发UI显示）
                     setSubmitted(true);
                     setTotalScore(totalScore);

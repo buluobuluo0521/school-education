@@ -1,28 +1,14 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { usePathname } from 'next/navigation'; // 新增导入
 import { useRouter } from 'next/navigation';
  
 function App() {
-  const [activeTab, setActiveTab] = useState('首页');
   const pathname = usePathname(); // 获取当前路由
   const router = useRouter();
-  // 监听路由变化，同步更新activeTab
-  useEffect(() => {
-    const pathToTab = {
-      '/Index': '首页',
-      '/Exam': '考试中心',
-      '/ExamRecord': '考试记录',
-      '/WrongBook': '错题集'
-    };
-    const matchedTab = pathToTab[pathname as keyof typeof pathToTab];
-    if (matchedTab) setActiveTab(matchedTab);
-  }, [pathname]);
   const [username, setUsername] = useState<string>('');
 
-  const navItems = ['首页', '考试中心', '考试记录', '错题集'];
   // 从 localStorage 中获取用户名
   useEffect(() => {
     const user = localStorage.getItem('username');
@@ -37,15 +23,8 @@ function App() {
   return (
     
     <div className="min-h-screen bg-gray-50">
-      {/* 导航栏组件 */}
-      <Navbar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        navItems={navItems}
-        username={username}  // 动态绑定用户名
-        classInfo="一年级三班"
-      />
-     <main className="container mx-auto px-4 py-12">
+      {/* 移除Navbar */}
+      <main className="container mx-auto px-4 py-12">
         {/* 欢迎区域 - 新增样式 */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-100 rounded-2xl shadow-xl p-8 md:p-12 transition-all duration-300 hover:shadow-2xl">
           <div className="flex flex-col items-center text-center">
@@ -76,7 +55,6 @@ function App() {
           </div>
         </div>
       </main>
-             {/* 页脚组件 */}   
       <Footer />
     </div>
   );

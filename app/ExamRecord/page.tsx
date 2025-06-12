@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import EmptyState from '@/components/EmptyState';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 type ExamRecord = {
   id: number;
@@ -65,14 +64,6 @@ const ExamRecordPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-    <Navbar 
-      activeTab="考试记录"
-      setActiveTab={() => {}}
-      navItems={['首页', '考试中心', '考试记录', '错题集']}
-      username={username}  // 动态绑定用户名
-      classInfo="一年级三班"
-    />
-
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">考试记录</h1>
       {records.length === 0 ? (

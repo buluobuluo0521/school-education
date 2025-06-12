@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 export default function WrongBookPage() {
@@ -19,13 +18,6 @@ export default function WrongBookPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar 
-        activeTab="错题集"
-        setActiveTab={() => {}}
-        navItems={['首页', '考试中心', '考试记录', '错题集']}
-        username={username}
-        classInfo="一年级三班"
-      />
       <main className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">我的错题集</h1>
         {wrongs.length === 0 ? (

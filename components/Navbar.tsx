@@ -46,12 +46,12 @@ interface NavbarProps {
                           router.push('/Index');
                           break;
                         case '考试中心':
-                          router.push('/Exam');
+                          router.push('/Exam'); // 路径改为小写
                           break;
                         case '考试记录':
                           router.push('/ExamRecord');
                           break;
-                           case '错题集':
+                        case '错题集':
                           router.push('/WrongBook');
                           break;
                         // 其他导航项可在此扩展

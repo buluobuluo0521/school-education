@@ -1,20 +1,21 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
 import ExamFilters from '@/components/ExamFilters';
 import ExamCard from '@/components/ExamCard';
 import EmptyState from '@/components/EmptyState';
 import Footer from '@/components/Footer';
 
-function App() {
-  const [activeTab, setActiveTab] = useState('考试中心');
+export default function ExamPage() {
   const [examType, setExamType] = useState('全部');
   const [subject, setSubject] = useState('全部');
   const [exams, setExams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState<string>('');
+  const [examName, setExamName] = useState('');
 
-  const navItems = ['首页', '考试中心', '考试记录', '错题集'];
+
+
+
   const examTypes = ['全部', '固定试卷', '时段试卷', '任务试卷'];
   const subjects = ['全部', '语文', '数学'];
   // 从 localStorage 中获取用户名
@@ -51,7 +52,6 @@ function App() {
   
 
   const handleStartExam = (examId: number, examType: string, subject: string) => {
-    console.log(`开始考试: ${examId}`);
     window.location.href = `/Exampage?id=${examId}&type=${examType}&name=${subject}`;
   };
 
@@ -66,13 +66,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 导航栏组件 */}
-      <Navbar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        navItems={navItems}
-        username={username}  // 动态绑定用户名
-        classInfo="一年级三班"
-      />
+      
         {/* 主内容区域 */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
@@ -122,4 +116,3 @@ function App() {
   );
 }
 
-export default App;
